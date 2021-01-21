@@ -18,6 +18,15 @@ public class UserMealWithExcess {
         this.excess = excess;
     }
 
+    //Need this for stream in @filteredByStreams method
+    public boolean isExcess() {
+        return excess;
+    }
+    //Need this for stream in @filteredByStreams method
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     @Override
     public String toString() {
         return "UserMealWithExcess{" +
