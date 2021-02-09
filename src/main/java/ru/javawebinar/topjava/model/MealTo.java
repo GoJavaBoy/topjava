@@ -9,6 +9,8 @@ public class MealTo {
 
     private final int calories;
 
+    private Long mealToId;
+
 //    private final AtomicBoolean excess;      // or Boolean[1],  filteredByAtomic
 //    private final Boolean excess;            // filteredByReflection
 //    private final Supplier<Boolean> excess;  // filteredByClosure
@@ -44,6 +46,14 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
+    }
+
+    public Long getMealToId() {
+        return mealToId;
+    }
+
+    public void setMealToId(Long mealToId) {
+        this.mealToId = mealToId;
     }
 
     @Override

@@ -10,6 +10,7 @@
             table-layout: fixed; /* Фиксированная ширина ячеек */
             width: 100%; /* Ширина таблицы */
         }
+
         td, th {
             padding: 3px; /* Поля вокруг содержимого таблицы */
             border: 1px solid black; /* Параметры рамки */
@@ -21,6 +22,9 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
+<a href="meals?action=create">Add meal</a>
+<br>
+<br>
 <table>
     <tbody>
     <tr>
@@ -30,30 +34,17 @@
         <th></th>
         <th></th>
     </tr>
-    <c:set var="meals" value="${requestScope.mealsToList}" />
+    <c:set var="meals" value="${requestScope.mealsToList}"/>
     <c:forEach items="${meals}" var="meal">
         <fmt:parseDate value="${meal.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="dateForFormat"/>
-        <fmt:formatDate pattern="dd.MM.yyyy HH:mm:ss" value="${dateForFormat}" var="date" />
-        <c:choose>
-            <c:when test="${meal.excess == 'true'}">
-                <tr style="color: red">
-                    <td>${date}</td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td><a href="link">Update</a></td>
-                    <td><a href="link">Delete</a></td>
-                </tr>
-            </c:when>
-            <c:otherwise>
-                <tr style="color: green">
-                    <td>${date}</td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td><a href="link">Update</a></td>
-                    <td><a href="link">Delete</a></td>
-                </tr>
-            </c:otherwise>
-        </c:choose>
+        <fmt:formatDate pattern="dd.MM.yyyy HH:mm:ss" value="${dateForFormat}" var="date"/>
+        <tr style="color: <c:out value="${meal.excess == 'true' ? 'red' : 'green'}" />">
+            <td>${date}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
+            <td><a href="meals?id=${meal.mealToId}&action=update">Update</a></td>
+            <td><a href="meals?id=${meal.mealToId}&action=delete">Delete</a></td>
+        </tr>
     </c:forEach>
     </tbody>
 </table>
