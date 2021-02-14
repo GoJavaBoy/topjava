@@ -12,7 +12,6 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -44,15 +43,16 @@ public class MealRestController {
         return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public Collection<MealTo> getFilteredAll(LocalDateTime startDate, LocalDateTime endDate) {
+    public Collection<MealTo> getFilteredAll(LocalDate startDate, LocalDate endDate,
+                                             LocalTime startTime, LocalTime endTime) {
         log.info("get all filtered meals from user {}", SecurityUtil.authUserId());
         return getAll().stream()
                 .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalDate(),
-                        startDate != null ? startDate.toLocalDate() : LocalDate.MIN,
-                        endDate != null ? endDate.plusDays(1).toLocalDate() : LocalDate.MAX))
+                        startDate != null ? startDate : LocalDate.MIN,
+                        endDate != null ? endDate.plusDays(1) : LocalDate.MAX))
                 .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalTime(),
-                        startDate != null ? startDate.toLocalTime() : LocalTime.MIN,
-                        endDate != null ? endDate.toLocalTime() : LocalTime.MAX))
+                        startTime != null ? startTime : LocalTime.MIN,
+                        endTime != null ? endTime : LocalTime.MAX))
                 .collect(Collectors.toList());
     }
 

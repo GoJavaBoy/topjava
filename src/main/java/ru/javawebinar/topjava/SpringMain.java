@@ -8,8 +8,6 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -29,9 +27,9 @@ public class SpringMain {
            // adminUserController.getAll().forEach(System.out::println);
             MealService ms = appCtx.getBean(MealService.class);
             MealRestController mc = appCtx.getBean(MealRestController.class);
-            mc.getFilteredAll(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0)
-                    , LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0))
-                    .forEach(System.out::println);
+//            mc.getFilteredAll(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0)
+//                    , LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0))
+//                    .forEach(System.out::println);
         }
     }
 }

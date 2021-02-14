@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -47,6 +49,7 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         MealRestController mealController = appCtx.getBean(MealRestController.class);
+
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -57,11 +60,24 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        mealController.create(new Meal (LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
+                        mealController.create(new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES),
                                 "", 1000, SecurityUtil.authUserId())) :
                         mealController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filter":
+                LocalDate startDate = request.getParameter("startDate").isEmpty() ? null
+                        : LocalDate.parse(request.getParameter("startDate"));
+                LocalDate endDate = request.getParameter("endDate").isEmpty() ? null
+                        : LocalDate.parse(request.getParameter("endDate"));
+                LocalTime startTime = request.getParameter("startTime").isEmpty() ? null
+                        : LocalTime.parse(request.getParameter("startTime"));
+                LocalTime endTime = request.getParameter("endTime").isEmpty() ? null
+                        : LocalTime.parse(request.getParameter("endTime"));
+                request.setAttribute("meals", mealController.getFilteredAll(startDate, endDate,
+                        startTime, endTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:

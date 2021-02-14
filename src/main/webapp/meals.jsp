@@ -22,7 +22,24 @@
     <hr/>
     <h2>Meals</h2>
     <br><br>
-
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter">
+        <label for="startDate">От даты (включая)</label>
+        <input type="date" id="startDate" name="startDate" value="">
+        <br><br>
+        <label for="endDate">До даты (включая)</label>
+        <input type="date" id="endDate" name="endDate" value="">
+        <br><br>
+        <label for="startTime">От времени (включая)</label>
+        <input type="time" id="startTime" name="startTime" value="">
+        <br><br>
+        <label for="endTime">До времени (исключая)</label>
+        <input type="time" id="endTime" name="endTime" value="">
+        <br><br>
+        <input type="submit" value="Отфильтровать" />
+        <br><br>
+    </form>
+    <br><br>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
