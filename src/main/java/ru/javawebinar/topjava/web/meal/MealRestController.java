@@ -6,9 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Controller
 public class MealRestController {
@@ -32,9 +39,21 @@ public class MealRestController {
         return service.get(id, SecurityUtil.authUserId());
     }
 
-    public Collection<Meal> getAll() {
+    public Collection<MealTo> getAll() {
         log.info("get all meals from user {}", SecurityUtil.authUserId());
-        return service.getAll(SecurityUtil.authUserId());
+        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
+    }
+
+    public Collection<MealTo> getFilteredAll(LocalDateTime startDate, LocalDateTime endDate) {
+        log.info("get all filtered meals from user {}", SecurityUtil.authUserId());
+        return getAll().stream()
+                .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalDate(),
+                        startDate != null ? startDate.toLocalDate() : LocalDate.MIN,
+                        endDate != null ? endDate.plusDays(1).toLocalDate() : LocalDate.MAX))
+                .filter(mealTo -> DateTimeUtil.isBetweenHalfOpen(mealTo.getDateTime().toLocalTime(),
+                        startDate != null ? startDate.toLocalTime() : LocalTime.MIN,
+                        endDate != null ? endDate.toLocalTime() : LocalTime.MAX))
+                .collect(Collectors.toList());
     }
 
     public void update(Meal meal, int id) {

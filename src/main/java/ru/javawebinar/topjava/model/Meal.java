@@ -14,8 +14,8 @@ public class Meal extends AbstractBaseEntity {
 
     private final int calories;
 
-    public Meal(LocalDateTime dateTime, String description, int calories) {
-        this(null, 1, dateTime, description, calories);
+    public Meal(LocalDateTime dateTime, String description, int calories, Integer userId) {//@param userId = check MeaslUtil, for testing pupouse only
+        this(null, userId, dateTime, description, calories); //@param userId = 1, for testing purpouse only
     }
 
     public Meal(Integer id, Integer userId, LocalDateTime dateTime, String description, int calories) {
