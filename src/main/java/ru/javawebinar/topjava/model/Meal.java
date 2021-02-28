@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.model;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 import javax.persistence.*;
 import java.time.LocalDate;
