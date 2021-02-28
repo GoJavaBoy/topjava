@@ -1,20 +1,29 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertThrows;
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -29,6 +38,34 @@ public class MealServiceTest {
 
     @Autowired
     private MealService service;
+
+    private static final Logger log = getLogger(MealServiceTest.class);
+    private static final Map<String, Long> timeTableForAll = new HashMap<>();
+
+    @Rule
+    public TestWatcher watcher = new TestWatcher() {
+        private long startTime;
+        @Override
+        protected void starting(Description description) {
+            startTime = System.currentTimeMillis();
+        }
+        @Override
+        protected void finished(Description description) {
+            long endTime = System.currentTimeMillis();
+            long dif = endTime - startTime;
+            timeTableForAll.put(description.getMethodName(), dif);
+            log.info("Время выполнения теста: {} миллисекунды", dif);
+        }
+    };
+
+    @ClassRule
+    public static TestWatcher watcherClass = new TestWatcher() {
+        @Override
+        protected void finished(Description description) {
+            timeTableForAll.forEach((testName, time) -> log.info("{} - {}", testName, time));
+        }
+    };
+
 
     @Test
     public void delete() {
@@ -82,12 +119,14 @@ public class MealServiceTest {
     @Test
     public void update() {
         Meal updated = getUpdated();
+        updated.setUser(UserTestData.user);
         service.update(updated, USER_ID);
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), getUpdated());
     }
 
     @Test
     public void updateNotOwn() {
+        meal1.setUser(UserTestData.user);
         assertThrows(NotFoundException.class, () -> service.update(meal1, ADMIN_ID));
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), meal1);
     }
