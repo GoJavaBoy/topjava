@@ -27,11 +27,17 @@ public class Profiles {
         }
     }
 
+//    //  Get Persistence profile depending of DB driver in classpath
+//    public static String getActivePersistenceProfile() {
+//    }
+
     //http://stackoverflow.com/questions/23871255/spring-profiles-simple-example-of-activeprofilesresolver
     public static class ActiveDbProfileResolver implements ActiveProfilesResolver {
         @Override
         public @NonNull String[] resolve(@NonNull Class<?> aClass) {
-            return new String[]{getActiveDbProfile()};
+            return new String[]{
+                    getActiveDbProfile()
+            };
         }
     }
 }
