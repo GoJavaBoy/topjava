@@ -56,4 +56,5 @@ public class DataJpaMealRepository implements MealRepository {
         User user = crudUserRepository.getOne(userId);
         return crudRepository.findAllByUserAndDateTimeGreaterThanEqualAndDateTimeLessThan(user, startDateTime, endDateTime, SORT_DATE);
     }
+
 }
